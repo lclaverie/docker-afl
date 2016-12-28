@@ -1,3 +1,4 @@
 projects/*
 !projects/phpinfo.php
 conf/nginx/*
+logs
