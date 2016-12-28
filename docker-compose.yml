@@ -2,21 +2,22 @@
 version: '2'
 services:
 
-  # Web Server PHP 7 + Apache 2
+  # Web Server PHP 5.6 + Apache 2
   web:
     restart: always
-    build: docker/php7apache
-    container_name: web
+    build: docker/php5apache
+    container_name: web-afl
     ports:
-       - "81:80" # Redirection des portes entre l'hote et Docker
+       - "80:80" # Redirection des portes entre l'hote et Docker
     volumes:
-       - ./projects:/var/www/html
+       - /home/adebril/src/php5:/mnt/filer/php5
+       - ./logs:/var/log/apache2
        - ./conf/apache/vhosts:/etc/apache2/sites-enabled # Emplacement de VHOST Apache
        - ./conf/php/php.ini:/usr/local/etc/php/conf.d/30-custom.ini # PHP ini custom
     environment:
        - ALLOW_OVERRIDE=true
     links:
-       - db:db
+       - localdb:localdb
        - maildev:maildev
 
 #  # Web Server NGinx
@@ -54,12 +55,15 @@ services:
 #        - maildev:maildev
 
   # Database MySQL
-  db:
+  localdb:
       restart: always
-      image: mysql
-      container_name: db
+      image: mariadb
+      container_name: localdb
       volumes:
-        - ./db/mysql:/var/lib/mysql # Commenter la ligne des volumes pour une base de données non persistente
+        - /var/data/mariadb:/var/lib/mysql # Commenter la ligne des volumes pour une base de données non persistente
+        - /var/data/sql:/var/sql
+      ports:
+        - "13306:3306"
       environment:
        - MYSQL_ROOT_PASSWORD=root # Mot de passe par defaut pour l'utisateur root
 
@@ -87,8 +91,8 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     links:
-      - db
+      - localdb:db
     ports:
-      - 8080:80
+      - 8000:80
     volumes:
       - /sessions
