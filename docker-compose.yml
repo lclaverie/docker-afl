@@ -63,7 +63,7 @@ services:
         - /var/data/mariadb:/var/lib/mysql # Commenter la ligne des volumes pour une base de données non persistente
         - /var/data/sql:/var/sql
       ports:
-        - "13306:3306"
+        - "3306:3306"
       environment:
        - MYSQL_ROOT_PASSWORD=root # Mot de passe par defaut pour l'utisateur root
 
@@ -74,11 +74,6 @@ services:
       container_name: maildev
       ports:
         - "1080:80"
-
-  # PHP Package management
-  composer:
-    restart: always
-    image: composer/composer
 
   # Node / Bower / Grunt
   nodejs-grunt-bower:
