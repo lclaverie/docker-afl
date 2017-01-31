@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
-./create-db-statements.sh $1 > /var/data/sql/db-creation.sql
+BASEDIR=$(cd "$(dirname "$0")" && pwd)
 
-cat mysql/$1.sql >> /var/data/sql/db-creation.sql
+$BASEDIR/create-db-statements.sh $1 > /var/data/sql/db-creation.sql
+
+cat $BASEDIR/mysql/$1-structure.sql >> /var/data/sql/db-creation.sql
+cat $BASEDIR/mysql/$1-data.sql >> /var/data/sql/db-creation.sql
 
 echo "#!/bin/bash" > /var/data/sql/init-db.sh
 echo 'mysql -u root -proot < /var/sql/db-creation.sql' >> /var/data/sql/init-db.sh
