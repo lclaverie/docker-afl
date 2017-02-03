@@ -10,49 +10,15 @@ services:
     ports:
        - "80:80" # Redirection des portes entre l'hote et Docker
     volumes:
-       - /home/adebril/src/php5:/mnt/filer/php5
-       - ./logs:/var/log/apache2
-       - ./conf/apache/vhosts:/etc/apache2/sites-enabled # Emplacement de VHOST Apache
-       - ./conf/php/php.ini:/usr/local/etc/php/conf.d/30-custom.ini # PHP ini custom
+       - c:\src\php5:/mnt/filer/php5
+       - c:\src\docker/logs:/var/log/apache2
+       - c:\src\docker\docker-afl\conf\apache\vhosts:/etc/apache2/sites-enabled # Emplacement de VHOST Apache
+       - c:\src\docker\docker-afl\conf\php\php.ini:/usr/local/etc/php/conf.d/30-custom.ini # PHP ini custom
     environment:
        - ALLOW_OVERRIDE=true
     links:
        - localdb:localdb
        - maildev:maildev
-
-#  # Web Server NGinx
-#  web:
-#    image: nginx
-#    ports:
-#        - "81:80"
-#    container_name: web
-#    volumes:
-#        - ./conf/nginx:/etc/nginx/conf.d
-#        - ./projects:/var/www/html
-#    links:
-#        - php:php
-#
-#  # PHP 7.0.13 FPM
-#  php:
-#    build: docker/php7fpm
-#    container_name: php
-#    volumes:
-#        - ./projects:/var/www/html
-#        - ./conf/php/php.ini:/usr/local/etc/php/php.ini
-#    links:
-#        - db:db
-#        - maildev:maildev
-
-  # PHP 5.6 FPM
-#  php:
-#    build: docker/php5.6fpm
-#    container_name: php
-#    volumes:
-#        - ./projects:/var/www/html
-#        - ./conf/php/php.ini:/usr/local/etc/php/php.ini
-#    links:
-#        - db:db
-#        - maildev:maildev
 
   # Database MySQL
   localdb:
@@ -61,9 +27,9 @@ services:
       container_name: localdb
       volumes:
         - /var/data/mariadb:/var/lib/mysql # Commenter la ligne des volumes pour une base de données non persistente
-        - /var/data/sql:/var/sql
+        - c:\src\docker\docker-afl:/opt/scripts
       ports:
-        - "3306:3306"
+        - "3306:13306"
       environment:
        - MYSQL_ROOT_PASSWORD=root # Mot de passe par defaut pour l'utisateur root
 
@@ -74,11 +40,6 @@ services:
       container_name: maildev
       ports:
         - "1080:80"
-
-  # Node / Bower / Grunt
-  nodejs-grunt-bower:
-    restart: always
-    image: digitallyseamless/nodejs-bower-grunt
 
   # PhpMyAdmin
   phpmyadmin:
@@ -91,3 +52,11 @@ services:
       - 8000:80
     volumes:
       - /sessions
+
+  tools:
+    restart: always
+    build: docker/tools
+    image: vfalies/tools
+    volumes:
+       - c:\src\php5:/src
+    container_name: tools
