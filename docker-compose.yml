@@ -10,10 +10,10 @@ services:
     ports:
        - "80:80" # Redirection des portes entre l'hote et Docker
     volumes:
-       - c:\src\php5:/mnt/filer/php5
-       - c:\src\docker/logs:/var/log/apache2
-       - c:\src\docker\docker-afl\conf\apache\vhosts:/etc/apache2/sites-enabled # Emplacement de VHOST Apache
-       - c:\src\docker\docker-afl\conf\php\php.ini:/usr/local/etc/php/conf.d/30-custom.ini # PHP ini custom
+       - /home/adebril/src/php:/mnt/filer/php5
+       - ./logs:/var/log/apache2
+       - ./conf/apache/vhosts:/etc/apache2/sites-enabled # Emplacement de VHOST Apache
+       - ./conf/php/php.ini:/usr/local/etc/php/conf.d/30-custom.ini # PHP ini custom
     environment:
        - ALLOW_OVERRIDE=true
     links:
@@ -27,7 +27,7 @@ services:
       container_name: localdb
       volumes:
         - /var/data/mariadb:/var/lib/mysql # Commenter la ligne des volumes pour une base de données non persistente
-        - c:\src\docker\docker-afl:/opt/scripts
+        - .:/opt/scripts
       ports:
         - "3306:3306"
       environment:
@@ -58,5 +58,5 @@ services:
     build: docker/tools
     image: vfalies/tools
     volumes:
-       - c:\src\php5:/src
+       - /home/adebril/src/php:/src
     container_name: tools

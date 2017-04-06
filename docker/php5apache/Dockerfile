@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     libldap2-dev \
     libsasl2-2 \
+    pdftk \
     && docker-php-ext-install iconv json mcrypt mbstring mysqli pdo_mysql pdo_sqlite phar curl ftp hash session simplexml tokenizer xml xmlrpc zip soap \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install gd \
@@ -23,7 +24,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install ldap
 
 
-WORKDIR /var/www/html
+WORKDIR /mnt/filer/php5/
 
 RUN a2enmod rewrite
 
