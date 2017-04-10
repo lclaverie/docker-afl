@@ -2,6 +2,9 @@
 
 BASEDIR=$(cd "$(dirname "$0")" && pwd)
 
-for file in ${BASEDIR}/export-scripts/*; do $file; done
-
-exit 0
+for file in ${BASEDIR}/conf/mysql/*conf; do
+    filename=$(basename $file)
+    dbname=`echo $filename | sed 's/.conf//g'`
+    echo "exporting $dbname"
+    ${BASEDIR}/bin/docker-mysql-export.sh $dbname
+done
