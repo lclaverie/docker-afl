@@ -4,55 +4,49 @@ Les pré-requis sur la machine hôte sont les suivants :
 
 - [docker](https://www.docker.com/products/overview)
 - [docker-compose](https://docs.docker.com/compose/install/)
+- configuration DNS correcte dans /etc/docker/daemon.json
 
-## Windows
+## configuration DNS
 
-Windows 7 ou plus récent avec le support de la virtualisation.
-Télécharger [Docker Toolbox](https://www.docker.com/toolbox) pour permettre l'utilisation de docker.
+Avec les droits de root, créer le fichier /etc/docker/daemon.json et y insérer la chaîne suivante :
 
-Attention, les fichiers devant être partagés avec la machine virtuelle doivent impérativement être déposé dans le Home utilisateur :
+```
+{
+    "dns": ["10.33.34.111", "10.33.34.112", "192.168.2.1", "8.8.8.8"]
+}
+```
 
-- `C:/Users/[NomUtilisateur]/`
+## Recommandé : ajouter l'utilisateur courant au groupe `docker`
+
+```
+sudo usermod -a -G docker $USER
+```
 
 # Installation
 
-Plusieurs scripts sont a disposition pour facilité l'utilisation courante des containers.
-
-- start.sh
-
-Lance le build, puis le démarrage de l'environnement de développement.
-
-- stop.sh
-
-Arrête l'ensemble des containers et les supprime.
-
-- .bash_aliases
-
-Permet de créer les alias nécessaires à l'utilisation des outils suivants :
-
-  - PHP
-  - composer
-  - bower
-  - grunt
-  - nodejs
-  - npm
-
-Pour installer ces alias, utiliser la commande suivante :
+Après avoir cloné ce dépôt, y lancer la construction et le démarrage des conteneurs :
 
 ```
-source .bash_aliases
+docker-compose up --build
 ```
-# Utilisation
 
-Sous Windows, `localhost` devra être remplacé par l'adresse IP de la machine virtuelle Docker Toolbox.
+Docker va procéder à l'Installation de tous les conteneurs et tous les lancer. A la fin, le conteneur web-afl répond une 403 sur le port 80 : http://localhost
 
-## Accès web
+Pour procéder à la suite des opérations, il est préférable de démarrer un autre terminal pour y lancer les commandes à venir.
 
-L'utilisation du serveur web se fait via le port 81. Un phpinfo() est disponible à l'adresse :
+## Bases de données
+
+Les bases de données doivent être importées depuis le serveur mabwaf-bdd1. Les scripts  export-all.sh et import-all.sh prennent en charge la récupération des bases et leurs imports dans le conteneur localdb.
 
 ```
-http://localhost:81/phpinfo.php
+./export-all.sh
 ```
+
+```
+./import-all.sh
+```
+
+# Outils mis à disposition
 
 ## Maildev
 
