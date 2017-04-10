@@ -58,10 +58,10 @@ http://localhost:1080
 
 ## PhpMyAdmin
 
-PhpMyAdmin est disponible via le port 8080.
+PhpMyAdmin est disponible via le port 8000.
 
 ```
-http://localhost:8080/
+http://localhost:8000/
 ```
 
 L'utilsateur par défaut est `root`, le mot de passe étant défini directement dans le fichier `docker-compose.yml` (`root` par défaut)
