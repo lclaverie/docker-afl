@@ -10,7 +10,7 @@ services:
     ports:
        - "80:80" # Redirection des portes entre l'hote et Docker
     volumes:
-       - /home/adebril/src/php:/mnt/filer/php5
+       - /mnt/filer/php5:/mnt/filer/php5
        - ./logs:/var/log/apache2
        - ./conf/apache/vhosts:/etc/apache2/sites-enabled # Emplacement de VHOST Apache
        - ./conf/php/php.ini:/usr/local/etc/php/conf.d/30-custom.ini # PHP ini custom
@@ -58,5 +58,5 @@ services:
     build: docker/tools
     image: vfalies/tools
     volumes:
-       - /home/adebril/src/php:/src
+       - /home/lclaverie/src/php:/src
     container_name: tools
