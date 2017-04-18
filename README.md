@@ -46,6 +46,15 @@ Les bases de données doivent être importées depuis le serveur mabwaf-bdd1. Le
 ./import-all.sh
 ```
 
+## /etc/hosts
+
+Spécifier les nouveaux noms réseaux dans le fichier /etc/hosts
+
+```
+127.0.0.1	localhost afl.wkf.net.dev bo.wkf.net.dev ws.wkf.net.dev aflpro.wkf.net.dev
+
+```
+
 # Outils mis à disposition
 
 ## Maildev
