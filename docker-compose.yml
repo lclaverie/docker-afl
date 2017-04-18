@@ -2,6 +2,20 @@
 version: '2'
 services:
 
+  ssl:
+    restart: always
+    image: nginx
+    container_name: ssl-afl
+    ports:
+       - "443:443" # Redirection des portes entre l'hote et Docker
+    volumes:
+       - ./conf/nginx/conf.d:/etc/nginx/conf.d # Configuration nginx
+       - ./conf/nginx/ssl:/etc/nginx/ssl # Configuration nginx
+    environment:
+       - ALLOW_OVERRIDE=true
+    links:
+       - web:web
+
   # Web Server PHP 5.6 + Apache 2
   web:
     restart: always
@@ -9,7 +23,6 @@ services:
     container_name: web-afl
     ports:
        - "80:80" # Redirection des portes entre l'hote et Docker
-       - "443:443" # Redirection des portes entre l'hote et Docker
     volumes:
        - /home/adebril/src/php:/mnt/filer/php5
        - ./logs:/var/log/apache2
