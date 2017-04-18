@@ -27,5 +27,6 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /mnt/filer/php5/
 
 RUN a2enmod rewrite
+RUN a2enmod ssl
 
 CMD ["apache2-foreground"]

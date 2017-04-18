@@ -9,10 +9,12 @@ services:
     container_name: web-afl
     ports:
        - "80:80" # Redirection des portes entre l'hote et Docker
+       - "443:443" # Redirection des portes entre l'hote et Docker
     volumes:
        - /home/adebril/src/php:/mnt/filer/php5
        - ./logs:/var/log/apache2
        - ./conf/apache/vhosts:/etc/apache2/sites-enabled # Emplacement de VHOST Apache
+       - ./conf/apache/certs:/etc/apache2/certs # Emplacement de VHOST Apache
        - ./conf/php/php.ini:/usr/local/etc/php/conf.d/30-custom.ini # PHP ini custom
     environment:
        - ALLOW_OVERRIDE=true
@@ -52,11 +54,3 @@ services:
       - 8000:80
     volumes:
       - /sessions
-
-  tools:
-    restart: always
-    build: docker/tools
-    image: vfalies/tools
-    volumes:
-       - /home/adebril/src/php:/src
-    container_name: tools
