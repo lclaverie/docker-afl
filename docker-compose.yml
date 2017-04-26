@@ -76,6 +76,6 @@ services:
     container_name: infogreffe
     ports:
       - "2222:22"
-    command: test_wkf
+    command: test_wkf:123:1000:1000
     volumes:
        - $HOME/src/php/waf_webservices/edi/config/id_rsa_test.pub:/home/test_wkf/.ssh/keys/id_rsa.pub
