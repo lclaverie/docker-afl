@@ -24,7 +24,7 @@ services:
     ports:
        - "80:80" # Redirection des portes entre l'hote et Docker
     volumes:
-       - /home/adebril/src/php:/mnt/filer/php5
+       - $HOME/src/php:/mnt/filer/php5
        - ./logs:/var/log/apache2
        - ./conf/apache/vhosts:/etc/apache2/sites-enabled # Emplacement de VHOST Apache
        - ./conf/apache/certs:/etc/apache2/certs # Emplacement de VHOST Apache
@@ -33,6 +33,7 @@ services:
        - ALLOW_OVERRIDE=true
     links:
        - localdb:localdb
+       - infogreffe:infogreffe
        - maildev:maildev
 
   # Database MySQL
@@ -67,3 +68,14 @@ services:
       - 8000:80
     volumes:
       - /sessions
+
+  # Infogreffe
+  infogreffe:
+    restart: always
+    build: docker/infogreffe
+    container_name: infogreffe
+    ports:
+      - "2222:22"
+    command: test_wkf
+    volumes:
+       - $HOME/src/php/waf_webservices/edi/config/id_rsa_test.pub:/home/test_wkf/.ssh/keys/id_rsa.pub
