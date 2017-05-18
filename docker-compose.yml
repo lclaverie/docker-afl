@@ -2,9 +2,23 @@
 version: '2'
 services:
 
+  ssl:
+    restart: on-failure
+    image: nginx
+    container_name: ssl-afl
+    ports:
+       - "443:443" # Redirection des portes entre l'hote et Docker
+    volumes:
+       - ./conf/nginx/conf.d:/etc/nginx/conf.d # Configuration nginx
+       - ./conf/nginx/ssl:/etc/nginx/ssl # Configuration nginx
+    environment:
+       - ALLOW_OVERRIDE=true
+    links:
+       - web:web
+
   # Web Server PHP 5.6 + Apache 2
   web:
-    restart: always
+    restart: on-failure
     build: docker/php5apache
     container_name: web-afl
     ports:
@@ -13,16 +27,18 @@ services:
        - /mnt/filer/php5:/mnt/filer/php5
        - ./logs:/var/log/apache2
        - ./conf/apache/vhosts:/etc/apache2/sites-enabled # Emplacement de VHOST Apache
+       - ./conf/apache/certs:/etc/apache2/certs # Emplacement de VHOST Apache
        - ./conf/php/php.ini:/usr/local/etc/php/conf.d/30-custom.ini # PHP ini custom
     environment:
        - ALLOW_OVERRIDE=true
     links:
        - localdb:localdb
+       - infogreffe:infogreffe
        - maildev:maildev
 
   # Database MySQL
   localdb:
-      restart: always
+      restart: on-failure
       image: mariadb
       container_name: localdb
       volumes:
@@ -33,9 +49,17 @@ services:
       environment:
        - MYSQL_ROOT_PASSWORD=root # Mot de passe par defaut pour l'utisateur root
 
+  # Grunt
+  grunt:
+      restart: on-failure
+      build: docker/grunt
+      container_name: grunt
+      volumes:
+          - /mnt/filer/php5/waf_websites/afl:/src
+
   # To create email during devloppement
   maildev:
-      restart: always
+      restart: on-failure
       image: djfarrelly/maildev
       container_name: maildev
       ports:
@@ -43,7 +67,7 @@ services:
 
   # PhpMyAdmin
   phpmyadmin:
-    restart: always
+    restart: on-failure
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     links:
@@ -53,10 +77,13 @@ services:
     volumes:
       - /sessions
 
-  tools:
-    restart: always
-    build: docker/tools
-    image: vfalies/tools
+  # Infogreffe
+  infogreffe:
+    restart: on-failure
+    build: docker/infogreffe
+    container_name: infogreffe
+    ports:
+      - "2222:22"
+    command: test_wkf:123:1000:1000
     volumes:
-       - /home/lclaverie/src/php:/src
-    container_name: tools
+       - /mnt/filer/php5/waf_webservices/edi/config/id_rsa_test.pub:/home/test_wkf/.ssh/keys/id_rsa.pub
