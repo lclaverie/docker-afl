@@ -87,3 +87,13 @@ services:
     command: test_wkf:123:1000:1000
     volumes:
        - /mnt/filer/php5/waf_webservices/edi/config/id_rsa_test.pub:/home/test_wkf/.ssh/keys/id_rsa.pub
+
+  # navigateur
+  googlechrome:
+    image: selenium/standalone-chrome
+    container_name: googlechrome
+    ports:
+        - "4444:4444"
+    links:
+       - web:afl.wkf.net.dev
+       
