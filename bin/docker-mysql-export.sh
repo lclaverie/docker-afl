@@ -18,6 +18,11 @@ _DEV_customers_addresses
 _DEV_customers_tokens
 orders_baskets
 orders_details
+notices
+_DEV_notices
+logs_notices
+notices_archives
+tmp_notices
 )
 
 IGNORED_TABLES_STRING=''
