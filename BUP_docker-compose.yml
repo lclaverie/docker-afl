@@ -22,24 +22,6 @@ services:
     build: docker/php5apache
     container_name: web-afl
     ports:
-       - "7080:80" # Redirection des portes entre l'hote et Docker
-    volumes:
-       - /mnt/filer/php5:/mnt/filer/php5
-       - ./logs:/var/log/apache2
-       - ./conf/apache/vhosts:/etc/apache2/sites-enabled # Emplacement de VHOST Apache
-       - ./conf/apache/certs:/etc/apache2/certs # Emplacement de VHOST Apache
-       - ./conf/php/php.ini:/usr/local/etc/php/conf.d/30-custom.ini # PHP ini custom
-    environment:
-       - ALLOW_OVERRIDE=true
-    links:
-       - localdb:localdb
-       - maildev:maildev
-
-  # Web Server PHP 7.2 + Apache 2
-  web-php7:
-    build: docker/php7apache
-    container_name: web-afl-php7
-    ports:
        - "80:80" # Redirection des portes entre l'hote et Docker
     volumes:
        - /mnt/filer/php5:/mnt/filer/php5
@@ -51,6 +33,7 @@ services:
        - ALLOW_OVERRIDE=true
     links:
        - localdb:localdb
+       - infogreffe:infogreffe
        - maildev:maildev
 
   # Database MySQL
@@ -93,8 +76,24 @@ services:
       - 8000:80
     volumes:
       - /sessions
-    environment:
-        - PMA_USER=root
-        - PMA_PASSWORD=root
 
+  # Infogreffe
+  infogreffe:
+    restart: on-failure
+    build: docker/infogreffe
+    container_name: infogreffe
+    ports:
+      - "2222:22"
+    command: test_wkf:123:1000:1000
+    volumes:
+       - /mnt/filer/php5/waf_webservices/edi/config/id_rsa_test.pub:/home/test_wkf/.ssh/keys/id_rsa.pub
+
+  # navigateur
+  googlechrome:
+    image: selenium/standalone-chrome
+    container_name: googlechrome
+    ports:
+        - "4444:4444"
+    links:
+       - web:afl.wkf.net.dev
    

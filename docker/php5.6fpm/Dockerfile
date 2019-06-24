@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
         libxml2-dev \
         libzzip-dev \
         pdftk \
+        php5-intl \
     && docker-php-ext-install iconv json mcrypt mbstring mysql mysqli pdo_mysql pdo_sqlite phar curl ftp hash session simplexml tokenizer xml xmlrpc zip \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install gd
